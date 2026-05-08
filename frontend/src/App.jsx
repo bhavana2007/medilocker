@@ -1,19 +1,21 @@
-import { useEffect, useState } from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import Dashboard from "./pages/Dashboard";
+import Upload from "./pages/Upload";
+import Doctor from "./pages/Doctor";
 function App() {
-  const [message, setMessage] = useState("");
-
-  useEffect(() => {
-    fetch("http://127.0.0.1:8000/")
-      .then((response) => response.json())
-      .then((data) => setMessage(data.message));
-  }, []);
-
   return (
-    <div>
-      <h1>MediLocker</h1>
-      <p>{message}</p>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+      <Route path="/upload/:type" element={<Upload />} />
+        <Route path="/doctor" element={<Doctor />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 
