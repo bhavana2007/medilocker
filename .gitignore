@@ -1,0 +1,20 @@
+# Node modules
+frontend/node_modules/
+
+# Python virtual environment
+backend/venv/
+
+# Python cache
+backend/__pycache__/
+
+# Environment variables
+.env
+
+# Build folders
+dist/
+
+# VS Code
+.vscode/
+
+# OS files
+.DS_Store
