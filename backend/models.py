@@ -16,4 +16,11 @@ class User(Base):
     password = Column(String(100))
 
     hospital = Column(String(100))
+
+class MedicalRecord(Base):
+    __tablename__ = "medical_records"
+
+    id = Column(Integer, primary_key=True, index=True)
+    email = Column(String(100))
+    file_path = Column(String(255))
     

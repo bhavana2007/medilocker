@@ -1,14 +1,17 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
+from fastapi.staticfiles import StaticFiles
 from database import engine
 from models import Base
-from sqlalchemy.orm import Session
-from database import SessionLocal
-from models import User as UserModel
+from routes import auth
+
+# 1. CREATE APP FIRST (MOST IMPORTANT)
 app = FastAPI()
+
+# 2. DATABASE SETUP
 Base.metadata.create_all(bind=engine)
-# Allow frontend connection
+
+# 3. CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -17,41 +20,13 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# User model
-class User(BaseModel):
-    role: str
-    name: str
-    email: str
-    password: str
-    hospital: str = ""
+# 4. ROUTES
+app.include_router(auth.router, prefix="/auth")
 
-# Home route
+# 5. STATIC FILES (uploads)
+app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
+
+# 6. HOME ROUTE
 @app.get("/")
 def home():
-    return {"message": "MediLocker Backend Running Successfully"}
-
-# Register route
-@app.post("/register")
-def register(user: User):
-
-    db: Session = SessionLocal()
-
-    new_user = UserModel(
-        role=user.role,
-        name=user.name,
-        email=user.email,
-        password=user.password,
-        hospital=user.hospital
-    )
-
-    db.add(new_user)
-
-    db.commit()
-
-    db.refresh(new_user)
-
-    db.close()
-
-    return {
-        "message": f"{user.role} registered successfully"
-    }
+    return {"message": "MediLocker Backend Running"}
