@@ -29,7 +29,7 @@ def register(user: User):
 
     db: Session = SessionLocal()
 
-    # ✅ hash password first
+    # ✅ hash password
     hashed_password = bcrypt.hashpw(
         user.password.encode('utf-8'),
         bcrypt.gensalt()
@@ -48,7 +48,9 @@ def register(user: User):
     db.refresh(new_user)
     db.close()
 
-    return {"message": f"{user.role} registered successfully"}
+    return {
+        "message": f"{user.role} registered successfully"
+    }
 
 # ------------------ LOGIN ------------------
 
