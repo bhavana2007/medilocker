@@ -1,4 +1,5 @@
 import { useState } from "react";
+import "./App.css";
 import axios from "axios";
 
 function App() {
@@ -6,6 +7,11 @@ function App() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
+  const [isRegister, setIsRegister] = useState(false);
+
+const [name, setName] = useState("");
+const [role, setRole] = useState("patient");
+const [hospital, setHospital] = useState("");
 
   const [file, setFile] = useState(null);
 
@@ -56,6 +62,29 @@ function App() {
 
     }
   };
+
+  const handleRegister = async () => {
+  try {
+    const res = await axios.post(
+      "http://127.0.0.1:8000/auth/register",
+      {
+        role,
+        name,
+        email,
+        password,
+        hospital,
+      }
+    );
+
+    setMessage(res.data.message);
+    setIsRegister(false);
+
+  } catch (err) {
+    setMessage(
+      err.response?.data?.message || "Registration failed"
+    );
+  }
+};
 
   // ---------------- UPLOAD ----------------
 
@@ -228,17 +257,45 @@ function App() {
 
   // ---------------- LOGIN PAGE ----------------
 
-  return (
+return (
+  <div className="container">
 
-    <div style={{ padding: "50px" }}>
+    <div className="card">
 
-      <h1>MediLocker Login</h1>
+      <h1>
+        {isRegister ? "MediLocker Register" : "MediLocker Login"}
+      </h1>
+
+      {isRegister && (
+        <>
+          <input
+            placeholder="Name"
+            onChange={(e) => setName(e.target.value)}
+          />
+
+          <br /><br />
+
+          <select
+            onChange={(e) => setRole(e.target.value)}
+          >
+            <option value="patient">Patient</option>
+            <option value="doctor">Doctor</option>
+          </select>
+
+          <br /><br />
+
+          <input
+            placeholder="Hospital"
+            onChange={(e) => setHospital(e.target.value)}
+          />
+
+          <br /><br />
+        </>
+      )}
 
       <input
         placeholder="Email"
-        onChange={(e) =>
-          setEmail(e.target.value)
-        }
+        onChange={(e) => setEmail(e.target.value)}
       />
 
       <br /><br />
@@ -246,21 +303,35 @@ function App() {
       <input
         placeholder="Password"
         type="password"
-        onChange={(e) =>
-          setPassword(e.target.value)
-        }
+        onChange={(e) => setPassword(e.target.value)}
       />
 
       <br /><br />
 
-      <button onClick={handleLogin}>
-        Login
+      {isRegister ? (
+        <button onClick={handleRegister}>
+          Register
+        </button>
+      ) : (
+        <button onClick={handleLogin}>
+          Login
+        </button>
+      )}
+
+      <br /><br />
+
+      <button
+        onClick={() => setIsRegister(!isRegister)}
+      >
+        {isRegister
+          ? "Already have account? Login"
+          : "Create New Account"}
       </button>
 
       <p>{message}</p>
 
     </div>
-  );
+  </div>
+);
 }
-
 export default App;
